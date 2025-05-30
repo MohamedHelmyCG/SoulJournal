@@ -28,23 +28,6 @@ export const EntryList: React.FC<EntryListProps> = ({
     onSearch(query);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  };
-
-  // Get excerpt from transcript
-  const getExcerpt = (text: string, maxLength = 100) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + "...";
-  };
-
   return (
     <div className="space-y-4">
       {/* Header Section */}
@@ -95,38 +78,38 @@ export const EntryList: React.FC<EntryListProps> = ({
             entries.map((entry) => (
               <div
                 key={entry.id}
-                className="bg-white rounded-lg p-4 hover:bg-[#F5F1EA] cursor-pointer transition-colors border border-[#E8E1D5]"
+                className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => onSelectEntry(entry.id)}
               >
-                <div className="flex justify-between items-start mb-1">
-                  <span className="text-sm font-medium text-[#6F5B45]">
-                    {formatDate(entry.date)}
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-lg font-medium text-[#4A4036]">
+                    {entry.title}
+                  </h3>
+                  <span className="text-sm text-[#8B7355]">
+                    {new Date(entry.date).toLocaleDateString()}
                   </span>
                 </div>
-                <h3 className="font-medium text-[#4A4036] mb-1">
-                  {entry.title}
-                </h3>
-                <p className="text-[#6F5B45] line-clamp-2 text-sm">
-                  {getExcerpt(entry.lastMessage)}
+                <p className="text-[#6F5B45] text-sm line-clamp-2">
+                  {entry.lastMessage}
                 </p>
-
                 <div className="flex justify-end mt-2 space-x-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onContinueEntry(entry.id);
                     }}
-                    className="text-sm px-3 py-1.5 bg-[#E8E1D5] text-[#4A4036] rounded-lg hover:bg-[#8B7355] hover:text-white transition-colors"
+                    className="text-sm px-3 py-1 bg-[#8B7355] text-white rounded-md hover:bg-[#6F5B45] transition-colors"
                   >
                     Continue
                   </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onSelectEntry(entry.id);
+                      onDeleteEntry(entry.id);
                     }}
-                    className="text-sm px-3 py-1.5 bg-[#8B7355] text-white rounded-lg hover:bg-[#6F5B45] transition-colors"
+                    className="text-sm px-3 py-1 bg-[#C1666B] text-white rounded-md hover:bg-[#A34448] transition-colors"
                   >
-                    View
+                    Delete
                   </button>
                 </div>
               </div>
