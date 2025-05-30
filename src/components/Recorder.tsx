@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
-import { useTranscription } from '../hooks/useTranscription';
+import { useState } from "react";
+import { useVoiceRecorder } from "../hooks/useVoiceRecorder";
+import { useTranscription } from "../hooks/useTranscription";
 
 interface RecorderProps {
   onSave: (audioUrl: string | null, transcript: string) => void;
@@ -8,48 +8,49 @@ interface RecorderProps {
 }
 
 export const Recorder: React.FC<RecorderProps> = ({ onSave, onCancel }) => {
-  const [recordingStep, setRecordingStep] = useState<'idle' | 'recording' | 'recorded'>('idle');
-  const { 
-    isRecording, 
-    audioURL, 
-    startRecording, 
-    stopRecording, 
-    resetRecording, 
-    error: recorderError 
+  const [recordingStep, setRecordingStep] = useState<
+    "idle" | "recording" | "recorded"
+  >("idle");
+  const {
+    isRecording,
+    audioURL,
+    startRecording,
+    stopRecording,
+    resetRecording,
+    error: recorderError,
   } = useVoiceRecorder();
-  
-  const { 
-    transcript, 
-    isListening, 
-    startListening, 
-    stopListening, 
-    resetTranscript, 
-    error: transcriptionError 
+
+  const {
+    transcript,
+    startListening,
+    stopListening,
+    resetTranscript,
+    error: transcriptionError,
   } = useTranscription();
 
   const handleStartRecording = async () => {
     await startRecording();
     startListening();
-    setRecordingStep('recording');
+    setRecordingStep("recording");
   };
 
   const handleStopRecording = async () => {
     await stopRecording();
     stopListening();
-    setRecordingStep('recorded');
+    setRecordingStep("recorded");
   };
 
   const handleSave = () => {
     onSave(audioURL, transcript);
     resetRecording();
     resetTranscript();
-    setRecordingStep('idle');
+    setRecordingStep("idle");
   };
 
   const handleCancel = () => {
     resetRecording();
     resetTranscript();
-    setRecordingStep('idle');
+    setRecordingStep("idle");
     onCancel();
   };
 
@@ -57,9 +58,9 @@ export const Recorder: React.FC<RecorderProps> = ({ onSave, onCancel }) => {
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="mb-4 text-center">
         <h2 className="text-2xl font-semibold text-gray-800">
-          {recordingStep === 'idle' && "What's on your mind today?"}
-          {recordingStep === 'recording' && "I'm listening..."}
-          {recordingStep === 'recorded' && "I heard you say:"}
+          {recordingStep === "idle" && "What's on your mind today?"}
+          {recordingStep === "recording" && "I'm listening..."}
+          {recordingStep === "recorded" && "I heard you say:"}
         </h2>
       </div>
 
@@ -67,20 +68,18 @@ export const Recorder: React.FC<RecorderProps> = ({ onSave, onCancel }) => {
       <div className="flex justify-center mb-6">
         <button
           onClick={isRecording ? handleStopRecording : handleStartRecording}
-          disabled={recordingStep === 'recorded'}
+          disabled={recordingStep === "recorded"}
           className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${
-            isRecording 
-              ? 'bg-red-500 animate-pulse' 
-              : recordingStep === 'recorded' 
-                ? 'bg-gray-300 cursor-not-allowed' 
-                : 'bg-blue-500 hover:bg-blue-600'
+            isRecording
+              ? "bg-red-500 animate-pulse"
+              : recordingStep === "recorded"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
           }`}
-          aria-label={isRecording ? 'Stop recording' : 'Start recording'}
+          aria-label={isRecording ? "Stop recording" : "Start recording"}
         >
-          <span className="text-white text-3xl">
-            {isRecording ? '■' : '●'}
-          </span>
-          
+          <span className="text-white text-3xl">{isRecording ? "■" : "●"}</span>
+
           {/* Pulse Animation Rings */}
           {isRecording && (
             <>
@@ -92,10 +91,14 @@ export const Recorder: React.FC<RecorderProps> = ({ onSave, onCancel }) => {
       </div>
 
       {/* Transcript Display */}
-      {(transcript || recordingStep === 'recorded') && (
+      {(transcript || recordingStep === "recorded") && (
         <div className="mb-6">
           <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] max-h-[200px] overflow-y-auto">
-            {transcript ? transcript : <span className="text-gray-400">No speech detected</span>}
+            {transcript ? (
+              transcript
+            ) : (
+              <span className="text-gray-400">No speech detected</span>
+            )}
           </div>
         </div>
       )}
@@ -122,8 +125,8 @@ export const Recorder: React.FC<RecorderProps> = ({ onSave, onCancel }) => {
         >
           Cancel
         </button>
-        
-        {recordingStep === 'recorded' && (
+
+        {recordingStep === "recorded" && (
           <button
             onClick={handleSave}
             className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"

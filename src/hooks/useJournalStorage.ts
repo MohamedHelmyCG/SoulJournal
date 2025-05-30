@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from './useFirebaseAuth';
 
 export interface ChatMessage {
   id: string;
@@ -28,11 +29,17 @@ interface UseJournalStorageReturn {
 
 export const useJournalStorage = (): UseJournalStorageReturn => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const { user } = useAuth();
 
-  // Load entries from localStorage on initial mount
+  // Get storage key for current user
+  const getStorageKey = () => {
+    return `journalEntries_${user?.uid || 'anonymous'}`;
+  };
+
+  // Load entries from localStorage on initial mount or when user changes
   useEffect(() => {
     try {
-      const storedEntries = localStorage.getItem('journalEntries');
+      const storedEntries = localStorage.getItem(getStorageKey());
       if (storedEntries) {
         // Parse the stored entries and convert string dates back to Date objects for messages
         const parsedEntries = JSON.parse(storedEntries);
@@ -47,20 +54,24 @@ export const useJournalStorage = (): UseJournalStorageReturn => {
         }));
         
         setEntries(processedEntries);
+      } else {
+        // Clear entries if no data found for current user
+        setEntries([]);
       }
     } catch (error) {
       console.error('Error loading entries from localStorage:', error);
+      setEntries([]); // Reset entries on error
     }
-  }, []);
+  }, [user?.uid]); // Reload when user changes
 
   // Save entries to localStorage whenever they change
   useEffect(() => {
     try {
-      localStorage.setItem('journalEntries', JSON.stringify(entries));
+      localStorage.setItem(getStorageKey(), JSON.stringify(entries));
     } catch (error) {
       console.error('Error saving entries to localStorage:', error);
     }
-  }, [entries]);
+  }, [entries, user?.uid]);
 
   // Generate a title from the conversation content
   const generateTitle = (conversation: ChatMessage[]): string => {

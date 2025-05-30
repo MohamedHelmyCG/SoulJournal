@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { JournalEntry } from '../types/journal';
+import { useState } from "react";
+import { JournalEntry } from "../types/journal";
 
 interface EntryViewProps {
   entry: JournalEntry;
@@ -7,18 +7,22 @@ interface EntryViewProps {
   onDelete: (id: string) => void;
 }
 
-export const EntryView: React.FC<EntryViewProps> = ({ entry, onBack, onDelete }) => {
+export const EntryView: React.FC<EntryViewProps> = ({
+  entry,
+  onBack,
+  onDelete,
+}) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
-  
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     }).format(date);
   };
 
@@ -33,7 +37,7 @@ export const EntryView: React.FC<EntryViewProps> = ({ entry, onBack, onDelete })
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
-        <button 
+        <button
           onClick={onBack}
           className="text-blue-500 hover:text-blue-700 flex items-center"
         >
@@ -45,7 +49,9 @@ export const EntryView: React.FC<EntryViewProps> = ({ entry, onBack, onDelete })
       {/* Audio Playback */}
       {entry.audioUrl && (
         <div className="mb-6">
-          <h3 className="text-sm font-medium text-gray-500 mb-2">Audio Recording</h3>
+          <h3 className="text-sm font-medium text-gray-500 mb-2">
+            Audio Recording
+          </h3>
           <audio src={entry.audioUrl} controls className="w-full" />
         </div>
       )}
@@ -72,9 +78,7 @@ export const EntryView: React.FC<EntryViewProps> = ({ entry, onBack, onDelete })
       {entry.mood && (
         <div className="mb-6">
           <h3 className="text-sm font-medium text-gray-500 mb-2">Mood</h3>
-          <div className="text-2xl">
-            {entry.mood}
-          </div>
+          <div className="text-2xl">{entry.mood}</div>
         </div>
       )}
 
@@ -83,12 +87,12 @@ export const EntryView: React.FC<EntryViewProps> = ({ entry, onBack, onDelete })
         <button
           onClick={handleDelete}
           className={`px-4 py-2 rounded-md transition-colors ${
-            confirmDelete 
-              ? 'bg-red-600 text-white hover:bg-red-700' 
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            confirmDelete
+              ? "bg-red-600 text-white hover:bg-red-700"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
-          {confirmDelete ? 'Confirm Delete' : 'Delete Entry'}
+          {confirmDelete ? "Confirm Delete" : "Delete Entry"}
         </button>
       </div>
     </div>

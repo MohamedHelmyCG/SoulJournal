@@ -1,24 +1,23 @@
-import { useState, useEffect, createContext, useContext } from 'react';
-import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
-  GoogleAuthProvider, 
+import { useState, useEffect, createContext, useContext } from "react";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
-  User as FirebaseUser
-} from 'firebase/auth';
+} from "firebase/auth";
 
 // Firebase configuration - replace with actual values when deploying
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
@@ -58,7 +57,9 @@ const AuthContext = createContext<AuthContextType>({
 export const useAuth = () => useContext(AuthContext);
 
 // Auth provider component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -90,13 +91,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithEmail = async (email: string, password: string) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to login';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to login";
       setError(errorMessage);
-      console.error('Login error:', err);
+      console.error("Login error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -106,13 +108,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to login with Google';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to login with Google";
       setError(errorMessage);
-      console.error('Google login error:', err);
+      console.error("Google login error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -122,13 +125,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (email: string, password: string) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to register';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to register";
       setError(errorMessage);
-      console.error('Registration error:', err);
+      console.error("Registration error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -137,26 +141,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Logout
   const logout = async () => {
     setError(null);
-    
+
     try {
       await signOut(auth);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to logout';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to logout";
       setError(errorMessage);
-      console.error('Logout error:', err);
+      console.error("Logout error:", err);
     }
   };
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        user, 
-        isLoading, 
-        error, 
-        loginWithEmail, 
-        loginWithGoogle, 
-        register, 
-        logout 
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        error,
+        loginWithEmail,
+        loginWithGoogle,
+        register,
+        logout,
       }}
     >
       {children}
